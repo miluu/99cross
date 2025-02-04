@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive } from 'vue';
+import { computed, onBeforeUnmount, reactive } from 'vue';
 import { keys, shuffle } from 'lodash-es';
 
 const questions = reactive<Record<number, [number, number][]>>({});
@@ -58,12 +58,13 @@ const nextQuestion = () => {
   }
 };
 
-document.addEventListener('keydown', (e: KeyboardEvent) => {
+const onKeyDown = (e: KeyboardEvent) => {
   if (e.key === ' ') {
     currentQuestions.showAnswer = true;
   }
-});
-document.addEventListener('keyup', (e: KeyboardEvent) => {
+};
+
+const onKeyUp = (e: KeyboardEvent) => {
   if (e.key === ' ') {
     currentQuestions.showAnswer = false;
     nextQuestion();
@@ -71,9 +72,17 @@ document.addEventListener('keyup', (e: KeyboardEvent) => {
   if (e.key === 'Enter') {
     resetQuestions();
   }
-});
+};
 
 resetQuestions();
+
+document.addEventListener('keydown', onKeyDown);
+document.addEventListener('keyup', onKeyUp);
+
+onBeforeUnmount(() => {
+  document.removeEventListener('keydown', onKeyDown);
+  document.removeEventListener('keyup', onKeyUp);
+});
 </script>
 
 <template>
