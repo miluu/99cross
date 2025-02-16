@@ -86,7 +86,14 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="wrap">
+  <div
+    class="wrap"
+    @touchstart="currentQuestions.showAnswer = true"
+    @touchend.prevent="
+      currentQuestions.showAnswer = false;
+      nextQuestion();
+    "
+  >
     <div
       :class="[
         'info',
@@ -110,17 +117,9 @@ onBeforeUnmount(() => {
         {{ item[0] }}×{{ item[1] }}={{ currentQuestion.result }}
       </span>
     </div>
-  </div>
-  <div class="btns">
-    <div
-      class="btn"
-      @click="nextQuestion"
-      @mousedown="currentQuestions.showAnswer = true"
-      @mouseup="currentQuestions.showAnswer = false"
-    >
-      下一题（空格）
+    <div class="btns">
+      <div class="btn" @click="resetQuestions">重新开始（回车）</div>
     </div>
-    <div class="btn" @click="resetQuestions">重新开始（回车）</div>
   </div>
 </template>
 
@@ -129,10 +128,14 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 100%;
 }
 .res {
-  font-size: 300px;
+  font-size: 200px;
   flex: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .info,
 .answer {
@@ -140,18 +143,17 @@ onBeforeUnmount(() => {
   display: flex;
   column-gap: 50px;
   justify-content: center;
+  flex: none;
   &.hidden {
     visibility: hidden;
   }
 }
 .btns {
-  position: fixed;
-  bottom: 40px;
-  right: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   column-gap: 20px;
+  flex: none;
 }
 .btn {
   padding: 20px;
